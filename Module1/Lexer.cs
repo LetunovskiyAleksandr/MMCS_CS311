@@ -67,6 +67,7 @@ namespace Lexer
 
         public override bool Parse()
         {
+			bool isNegative = false;
             NextCh();
             if (currentCh == '+' || currentCh == '-')
             {
@@ -99,6 +100,7 @@ namespace Lexer
 
 			if (isNegative == true)
 				parseResult *= -1;
+
             return true;
 
         }
