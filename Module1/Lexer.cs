@@ -70,11 +70,14 @@ namespace Lexer
             NextCh();
             if (currentCh == '+' || currentCh == '-')
             {
+				if (currentCh == '-')
+					isNegative = true;
                 NextCh();
             }
         
             if (char.IsDigit(currentCh))
             {
+				parseResult = parseResult*10 + int.Parse(currentCh.ToString());
                 NextCh();
             }
             else
@@ -84,6 +87,7 @@ namespace Lexer
 
             while (char.IsDigit(currentCh))
             {
+				parseResult = parseResult*10 + int.Parse(currentCh.ToString());
                 NextCh();
             }
 
@@ -93,6 +97,8 @@ namespace Lexer
                 Error();
             }
 
+			if (isNegative == true)
+				parseResult *= -1;
             return true;
 
         }
