@@ -156,55 +156,182 @@ namespace SimpleLexer
             LexText = "";
             LexRow = row;
             LexCol = col;
-            // Тип лексемы определяется по ее первому символу
-            // Для каждой лексемы строится синтаксическая диаграмма
-            if (currentCh == ';')
-            {
-                NextCh();
-                LexKind = Tok.SEMICOLON;
-            }
-            else if (currentCh == ':')
-            {
-                NextCh();
-                if (currentCh != '=')
-                {
-                    LexError("= was expected");
-                }
-                NextCh();
-                LexKind = Tok.ASSIGN;
-            }
-            else if (char.IsLetter(currentCh))
-            {
-                while (char.IsLetterOrDigit(currentCh))
-                {
-                    NextCh();
-                }
-                if (keywordsMap.ContainsKey(LexText))
-                {
-                    LexKind = keywordsMap[LexText];
-                }
-                else
-                {
-                    LexKind = Tok.ID;
-                }
-            }
-            else if (char.IsDigit(currentCh))
-            {
-                while (char.IsDigit(currentCh))
-                {
-                    NextCh();
-                }
-                LexValue = Int32.Parse(LexText);
-                LexKind = Tok.INUM;
-            }
-            else if ((int)currentCh == 0)
-            {
-                LexKind = Tok.EOF;
-            }
-            else
-            {
-                LexError("Incorrect symbol " + currentCh);
-            }
+			// Тип лексемы определяется по ее первому символу
+			// Для каждой лексемы строится синтаксическая диаграмма
+			bool b = true;
+			if (currentCh == '{')
+			{
+				NextCh();
+				b = false;
+			}
+			else if (currentCh == '+')
+			{
+				NextCh();
+				if (currentCh == '=')
+					LexKind = Tok.PLUSASSIGN;
+				else
+					LexKind = Tok.PLUS;
+			}
+			else if (currentCh == '-')
+			{
+				NextCh();
+				if (currentCh == '=')
+					LexKind = Tok.MINUSASSIGN;
+				else
+					LexKind = Tok.MINUS;
+			}
+			else if (currentCh == '*')
+			{
+				NextCh();
+				if (currentCh == '=')
+					LexKind = Tok.MULTASSIGN;
+				else
+					LexKind = Tok.MULT;
+			}
+			else if (currentCh == '/')
+			{
+				NextCh();
+				if (currentCh == '=')
+					LexKind = Tok.DIVASSIGN;
+				else
+					if (currentCh == '/' && b == true)
+					LexKind = Tok.COMMA;
+				else
+					LexKind = Tok.DIVISION;
+			}
+			else if (currentCh == 'd')
+			{
+				NextCh();
+				if (currentCh == 'i')
+				{
+					NextCh();
+					if (currentCh == 'v')
+					{
+						NextCh();
+						LexKind = Tok.DIV;
+					}
+				}
+			}
+			else if (currentCh == 'm')
+			{
+				NextCh();
+				if (currentCh == 'o')
+				{
+					NextCh();
+					if (currentCh == 'd')
+					{
+						NextCh();
+						LexKind = Tok.MOD;
+					}
+				}
+			}
+			else if (currentCh == 'a')
+			{
+				NextCh();
+				if (currentCh == 'n')
+				{
+					NextCh();
+					if (currentCh == 'd')
+					{
+						NextCh();
+						LexKind = Tok.AND;
+					}
+				}
+			}
+			else if (currentCh == 'n')
+			{
+				NextCh();
+				if (currentCh == 'o')
+				{
+					NextCh();
+					if (currentCh == 't')
+					{
+						NextCh();
+						LexKind = Tok.NOT;
+					}
+				}
+			}
+			else if (currentCh == 'o')
+			{
+				NextCh();
+				if (currentCh == 'r')
+				{
+					NextCh();
+					LexKind = Tok.OR;
+				}
+			}
+			else if (currentCh == '>')
+			{
+				NextCh();
+				if (currentCh == '=')
+					LexKind = Tok.GEQ;
+				else
+					LexKind = Tok.GT;
+			}
+			else if (currentCh == '<')
+			{
+				NextCh();
+				if (currentCh == '=')
+					LexKind = Tok.LEQ;
+				else
+					LexKind = Tok.LT;
+			}
+			else if (currentCh == ';')
+			{
+				NextCh();
+				LexKind = Tok.SEMICOLON;
+			}
+			else if (currentCh == ':')
+			{
+				NextCh();
+				if (currentCh != '=')
+				{
+					LexError("= was expected");
+				}
+				NextCh();
+				LexKind = Tok.ASSIGN;
+			}
+			else if (char.IsLetter(currentCh))
+			{
+				while (char.IsLetterOrDigit(currentCh))
+				{
+					NextCh();
+				}
+				if (keywordsMap.ContainsKey(LexText))
+				{
+					LexKind = keywordsMap[LexText];
+				}
+				else
+				{
+					LexKind = Tok.ID;
+				}
+			}
+			else if (char.IsDigit(currentCh))
+			{
+				while (char.IsDigit(currentCh))
+				{
+					NextCh();
+				}
+				LexValue = Int32.Parse(LexText);
+				LexKind = Tok.INUM;
+			}
+			else if (currentCh == '}' && !b)
+			{
+				NextCh();
+				b = true;
+			}
+			else if (!b)
+			{
+				LexError("Syntacsis error " + currentCh);
+			}
+			else if ((int)currentCh == 0)
+			{
+				LexKind = Tok.EOF;
+			}
+			else
+			{
+				LexError("Incorrect symbol " + currentCh);
+			}
         }
 
         public virtual void ParseToConsole()
