@@ -181,7 +181,31 @@ namespace Lexer
 
         public override bool Parse()
         {
-            throw new NotImplementedException();
+			/*//int i = 0;
+			NextCh();
+			if (currentCh == '_' || char.IsLetter(currentCh))
+			{
+				parseResult.Add(currentCh);
+				//i++;
+				NextCh();
+			}
+			else
+			{
+				Error();
+			}
+			while (currentCh == '_' || char.IsLetter(currentCh) || char.IsDigit(currentCh))
+			{
+				parseResult.Add(currentCh);
+				//i++;
+			}
+
+			if (currentCharValue != -1)
+			{
+				Error();
+			}
+
+			return true;*/
+			throw new NotImplementedException();
         }
     }
 
@@ -248,7 +272,52 @@ namespace Lexer
 
         public override bool Parse()
         {
-            throw new NotImplementedException();
+			double i = 0;
+			bool isNegative = false;
+			NextCh();
+			if (currentCh == '+' || currentCh == '-')
+			{
+				if (currentCh == '-')
+					isNegative = true;
+				NextCh();
+			}			
+
+			while (char.IsDigit(currentCh))
+			{
+				parseResult = parseResult * 10 + int.Parse(currentCh.ToString());
+				NextCh();
+			}
+
+
+			if (currentCh == '.')
+			{
+				i = 1;
+				NextCh();
+			}
+			else
+				if (currentCharValue != -1)
+				{
+					Error();
+				}
+
+			while (char.IsDigit(currentCh) && i != 0)
+			{
+				i *= 10;
+				parseResult = parseResult + int.Parse(currentCh.ToString()) / i;
+				NextCh();
+			}
+
+			if (currentCharValue != -1)
+			{
+				Error();
+			}
+
+			if (isNegative == true)
+				parseResult *= -1;
+
+			return true;
+
+			throw new NotImplementedException();
         }
        
     }
@@ -272,6 +341,7 @@ namespace Lexer
 
         public override bool Parse()
         {
+
             throw new NotImplementedException();
         }
     }
